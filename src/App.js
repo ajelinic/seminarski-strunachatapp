@@ -6,54 +6,41 @@ import setRandomColor from "./utils/SetRandomColor";
 import setRandomName from "./utils/SetRandomName";
 
 function App() {
-  // const [user, setUser] = useState([]);
+  const [user, setUser] = useState({
+    username: setRandomName(),
+    color: setRandomColor(),
+  });
   const [messageList, setMessageList] = useState([]);
   // const [userList, setUserList] = useState([]);
 
   const onCreateMessage = (message) => {
     const mSent = {
       message,
-      user: {
-        username: setRandomName(),
-        color: setRandomColor(),
-      },
     };
     setMessageList([...messageList, mSent]);
   };
 
-  // const onChangeUsername = (event) => {
-  //   setUser(event.target.value);
-  // };
+  // console.log(messageList);
+  // console.log(user.username);
 
-  // const onSubmitUser = (event) => {
-  //   event.preventDefault();
-  //   onCreateUser(user);
-  //   setUser("");
-  // };
-  // const onCreateUser = (user) => {
-  //   const mUser = {
-  //     user,
-  //   };
-  //   setUserList([...userList, mUser]);
-  // };
-  useEffect(() => {
-    const drone = new window.Scaledrone("uEBjhOewnG9HhRSy", {
-      messData: messageList.user,
-    });
-    drone.on("open", (error) => {
-      if (error) {
-        console.log("Error on connecting", error);
-      }
-      const user = { ...messageList.user };
-      user.id = drone.clientId;
-      console.log(user);
-    });
-    const myRoom = drone.subscribe("test-room");
-    myRoom.on("data", (messData, user) => {
-      const myMess = messageList.message;
-    });
-  });
-  // console.log(drone);
+  // useEffect(() => {
+  //   const drone = new window.Scaledrone("uEBjhOewnG9HhRSy", {
+  //     data: user,
+  //   });
+
+  //   drone.on("open", (error) => {
+  //     if (error) {
+  //       console.log("Error on connecting", error);
+  //     }
+  //     const chatUser = { ...user };
+  //     user.id = drone.clientId;
+  //     console.log(chatUser);
+  //   });
+  // const myRoom = drone.subscribe("test-room");
+  // myRoom.on("data", (data, chatUser) => {
+  //   const myMess = messageList.message;
+  // });
+  // });
 
   return (
     <div>
@@ -62,11 +49,8 @@ function App() {
         <div className="message--list">
           {messageList.map((mprop) => (
             <ul key={messageList.indexOf(mprop)}>
-              <li className="username">{mprop.user.username}</li>
-              <li
-                className="message"
-                style={{ backgroundColor: mprop.user.color }}
-              >
+              <li className="username">{user.username}</li>
+              <li className="message" style={{ backgroundColor: user.color }}>
                 {mprop.message}
 
                 <CurrentTime />
@@ -76,18 +60,6 @@ function App() {
         </div>
         <MessageForm onCreateMessage={onCreateMessage} />
       </div>
-      {/* <form className="user--form" onSubmit={onSubmitUser}>
-        <input
-          className="username--input"
-          type="text"
-          value={user}
-          placeholder="Set your username"
-          onChange={onChangeUsername}
-        />
-        <button className="send--button" type="submit" disabled={!user}>
-          Create user!
-        </button>
-      </form> */}
     </div>
   );
 }

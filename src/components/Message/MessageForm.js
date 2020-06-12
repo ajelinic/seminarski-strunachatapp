@@ -14,6 +14,7 @@ export default function MessageForm(props) {
     }
     setMessage("");
   };
+  // console.log("Creates 2 array", message);
   return (
     <form className="app--form" onSubmit={onSubmitMessage}>
       <input
