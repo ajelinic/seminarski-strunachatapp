@@ -2,7 +2,7 @@ import React from "react";
 
 class CurrentTime extends React.Component {
   state = {
-    currentTime: new Date().toLocaleString(),
+    currentTime: new Date().toLocaleString("hr-HR"),
   };
 
   render() {

@@ -1,18 +1,20 @@
 import React, { useState } from "react";
 
 export default function MessageForm(props) {
-  const [message, setMessage] = useState([]);
+  const [message, setMessage] = useState({
+    text: "",
+  });
 
   const onChangeMessage = (event) => {
-    setMessage(event.target.value);
+    setMessage({ text: event.target.value });
   };
 
   const onSubmitMessage = (event) => {
     event.preventDefault();
-    if (typeof props.onCreateMessage === "function") {
-      props.onCreateMessage(message);
+    if (typeof props.onNewMessage === "function") {
+      props.onNewMessage(message.text);
     }
-    setMessage("");
+    setMessage({ text: "" });
   };
   // console.log("Creates 2 array", message);
   return (
@@ -20,11 +22,11 @@ export default function MessageForm(props) {
       <input
         className="message--input"
         type="text"
-        value={message}
+        value={message.text}
         placeholder="Type a message and send!"
         onChange={onChangeMessage}
       />
-      <button className="send--button" type="submit" disabled={!message.length}>
+      <button className="send--button" type="submit" disabled={!message.text}>
         Send!
       </button>
     </form>

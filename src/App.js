@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import "./App.css";
-import CurrentTime from "./components/CurrentTime";
+import CurrentTime from "./utils/CurrentTime";
 import MessageForm from "./components/Message/MessageForm";
 import setRandomColor from "./utils/SetRandomColor";
 import setRandomName from "./utils/SetRandomName";
@@ -10,55 +10,71 @@ function App() {
     username: setRandomName(),
     color: setRandomColor(),
   });
-  const [messageList, setMessageList] = useState([]);
-  // const [userList, setUserList] = useState([]);
+  const [newMessage, setNewMessage] = useState([]);
+  const [connect, setNewConnect] = useState(null);
 
-  const onCreateMessage = (message) => {
-    const mSent = {
+  useEffect(() => {
+    const connect = new window.Scaledrone("uEBjhOewnG9HhRSy", {
+      //uEBjhOewnG9HhRSy
+      data: user,
+    });
+    setNewConnect(connect);
+    // eslint-disable-next-line
+  }, []);
+  if (connect) {
+    //Conditional Rendering - state konekcije
+    connect.on("open", (error) => {
+      if (error) {
+        console.log("Error on connecting", error);
+      }
+      console.log(
+        "Connection to Scaledrone established. Welcome " + user.username + "!"
+      );
+
+      const chatUser = { ...user };
+      user.id = connect.clientId;
+      setUser({ chatUser });
+
+      const myRoom = connect.subscribe("observable-room");
+      myRoom.on("data", (text, chatUser) => {
+        const myMess = newMessage;
+        const username = chatUser.clientData.username;
+        const color = chatUser.clientData.color;
+        const chatID = chatUser.id;
+        const time = <CurrentTime />;
+        const currentChatUser = chatUser;
+        const diversMessages = currentChatUser.id === user.id;
+        const className = diversMessages ? "user--message" : "other--message";
+        myMess.push({ text, username, color, chatID, time, className });
+        setNewMessage([...newMessage, myMess]);
+        console.log(newMessage);
+      });
+    });
+  }
+
+  const onNewMessage = (message) => {
+    connect.publish({
+      room: "observable-room",
       message,
-    };
-    setMessageList([...messageList, mSent]);
+    });
   };
-
-  // console.log(messageList);
-  // console.log(user.username);
-
-  // useEffect(() => {
-  //   const drone = new window.Scaledrone("uEBjhOewnG9HhRSy", {
-  //     data: user,
-  //   });
-
-  //   drone.on("open", (error) => {
-  //     if (error) {
-  //       console.log("Error on connecting", error);
-  //     }
-  //     const chatUser = { ...user };
-  //     user.id = drone.clientId;
-  //     console.log(chatUser);
-  //   });
-  // const myRoom = drone.subscribe("test-room");
-  // myRoom.on("data", (data, chatUser) => {
-  //   const myMess = messageList.message;
-  // });
-  // });
 
   return (
     <div>
       <h1 className="app--title">Struna's Chat App</h1>
       <div className="app--wrapper">
         <div className="message--list">
-          {messageList.map((mprop) => (
-            <ul key={messageList.indexOf(mprop)}>
-              <li className="username">{user.username}</li>
-              <li className="message" style={{ backgroundColor: user.color }}>
-                {mprop.message}
-
-                <CurrentTime />
+          {newMessage.map((mprop) => (
+            <ul className={mprop.className} key={newMessage.indexOf(mprop)}>
+              <li className="username">{mprop.username}</li>
+              <li className="message" style={{ backgroundColor: mprop.color }}>
+                {mprop.text}
+                {mprop.time}
               </li>
             </ul>
           ))}
         </div>
-        <MessageForm onCreateMessage={onCreateMessage} />
+        <MessageForm onNewMessage={onNewMessage} />
       </div>
     </div>
   );
