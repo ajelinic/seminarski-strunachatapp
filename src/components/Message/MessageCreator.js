@@ -1,6 +1,15 @@
-import React from "react";
+import React, { useEffect, useRef } from "react";
 
 export default function MessageCreator(props) {
+  const message = props.newMessage;
+  const messageEndRef = useRef(null);
+
+  const scrollToBottom = () => {
+    messageEndRef.current.scrollIntoView({ behavior: "smooth" });
+  };
+
+  useEffect(scrollToBottom, [message]);
+
   return (
     <div className="message--list">
       {props.newMessage.map((mprop) => (
@@ -8,10 +17,11 @@ export default function MessageCreator(props) {
           <li className="username">{mprop.username}</li>
           <li className="message" style={{ backgroundColor: mprop.color }}>
             {mprop.text}
-            {mprop.time}
+            <p className="time">{mprop.time}</p>
           </li>
         </ul>
       ))}
+      <div ref={messageEndRef} />
     </div>
   );
 }
