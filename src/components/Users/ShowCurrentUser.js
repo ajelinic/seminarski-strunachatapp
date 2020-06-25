@@ -9,7 +9,7 @@ class ShowCurrentUser extends React.Component {
   createUserList(user) {
     return (
       <ul className="online--users" key={user.id}>
-        <li className="member" style={{ backgroundColor: user.color }}>
+        <li className="online--member" style={{ backgroundColor: user.color }}>
           {user.username}
         </li>
       </ul>

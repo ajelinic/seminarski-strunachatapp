@@ -16,6 +16,7 @@ function App() {
   const [connect, setNewConnect] = useState(null);
   const [membersList, setMembersList] = useState([]);
   const [currentUser, setCurrentUser] = useState([]);
+  const [newUserJoined, setNewUser] = useState([]);
 
   useEffect(() => {
     const connect = new window.Scaledrone("uEBjhOewnG9HhRSy", {
@@ -59,24 +60,29 @@ function App() {
       });
 
       myRoom.on("members", (members) => {
-        const roomUsers = membersList.concat(members);
-        setMembersList(roomUsers);
+        setMembersList(...membersList, members);
       });
       myRoom.on("member_join", (member) => {
-        const joinedMembers = [];
-        joinedMembers.push(member);
-        setMembersList(...membersList, joinedMembers);
+        const id = member.id;
+        const username = member.clientData.username;
+        const color = member.clientData.color;
+        setNewUser((newUserJoined) => [
+          ...newUserJoined,
+          { id, clientData: { username, color } },
+        ]);
+        setMembersList(...membersList, newUserJoined);
       });
       myRoom.on("member_leave", (id) => {
-        const goneMembers = membersList;
-        const index = goneMembers.findIndex((member) => member.id === id);
-        const userGone = goneMembers.splice(index, 1);
-        // console.log(leaveMembers, "ako odem prijatelji");
-        setMembersList(...membersList, userGone);
+        const index = newUserJoined.findIndex((member) => member.id === id);
+        setNewUser((newUserJoined) => {
+          const userGone = newUserJoined.slice(index);
+          userGone.splice(index, 1);
+          return userGone;
+        });
       });
     });
   }
-
+  console.log(membersList, "tu");
   const onNewMessage = (message) => {
     connect.publish({
       room: "observable-room",
@@ -92,7 +98,7 @@ function App() {
         <h3 className="online--title">You:</h3>
         <ShowCurrentUser currentUser={currentUser} />
         <h3 className="online--title">Others:</h3>
-        <UserList members={membersList} currentUser={currentUser} />
+        <UserList members={newUserJoined} />
       </div>
       <div className="app--wrapper">
         <MessageCreator newMessage={newMessage} />
