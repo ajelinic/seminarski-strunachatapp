@@ -4,37 +4,34 @@ export default function MessageForm(props) {
   const [message, setMessage] = useState({
     text: "",
   });
-  const [isTyping, setUserTyping] = useState([]);
 
   const onChangeMessage = (event) => {
-    const typing = props.currentUser.map((user) => (
-      <div key={user.id}>{user.username} is typing...</div>
-    ));
-    setUserTyping(typing);
     setMessage({ text: event.target.value });
   };
 
   const onSubmitMessage = (event) => {
     event.preventDefault();
     if (typeof props.onNewMessage === "function") {
-      props.onNewMessage(message.text, isTyping);
+      props.onNewMessage(message.text);
     }
     setMessage({ text: "" });
-    setUserTyping("");
   };
 
   return (
     <div>
-      <div>{isTyping}</div>
-      <form className="app--form" onSubmit={onSubmitMessage}>
+      <form className="message__form" onSubmit={onSubmitMessage}>
         <input
-          className="message--input"
+          className="message__input"
           type="text"
           value={message.text}
           placeholder="Type a message and send!"
           onChange={onChangeMessage}
         />
-        <button className="send--button" type="submit" disabled={!message.text}>
+        <button
+          className="message__button--send"
+          type="submit"
+          disabled={!message.text}
+        >
           Send!
         </button>
       </form>

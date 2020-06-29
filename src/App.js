@@ -16,18 +16,15 @@ function App() {
   const [connect, setNewConnect] = useState(null);
   const [membersList, setMembersList] = useState([]);
   const [currentUser, setCurrentUser] = useState([]);
-  const [newUserJoined, setNewUser] = useState([]);
 
   useEffect(() => {
     const connect = new window.Scaledrone("uEBjhOewnG9HhRSy", {
-      //uEBjhOewnG9HhRSy
       data: user,
     });
     setNewConnect(connect);
     // eslint-disable-next-line
   }, []);
   if (connect) {
-    //Conditional Rendering - state konekcije
     connect.on("open", (error) => {
       if (error) {
         console.log("Error on connecting", error);
@@ -56,33 +53,36 @@ function App() {
         const className = diversMessages ? "user--message" : "other--message";
         myMess.push({ text, username, color, chatID, time, className });
         setNewMessage([...newMessage, myMess]);
-        // console.log(newMessage);
       });
 
       myRoom.on("members", (members) => {
-        setMembersList(...membersList, members);
+        onMembersList(members);
       });
       myRoom.on("member_join", (member) => {
-        const id = member.id;
-        const username = member.clientData.username;
-        const color = member.clientData.color;
-        setNewUser((newUserJoined) => [
-          ...newUserJoined,
-          { id, clientData: { username, color } },
-        ]);
-        setMembersList(...membersList, newUserJoined);
+        onUserJoined(member);
       });
       myRoom.on("member_leave", (id) => {
-        const index = newUserJoined.findIndex((member) => member.id === id);
-        setNewUser((newUserJoined) => {
-          const userGone = newUserJoined.slice(index);
-          userGone.splice(index, 1);
-          return userGone;
-        });
+        onUserLeaving(id);
       });
     });
   }
-  console.log(membersList, "tu");
+
+  const onMembersList = (members) => {
+    setMembersList(...membersList, members);
+  };
+  const onUserJoined = (member) => {
+    setMembersList((membersList) => [...membersList, member]);
+  };
+
+  const onUserLeaving = (id) => {
+    const userIsLeaving = membersList;
+    const index = userIsLeaving.map((member) => member.id === id);
+    setMembersList((membersList) => {
+      const userGone = membersList.slice(index, 1);
+      return userGone;
+    });
+  };
+
   const onNewMessage = (message) => {
     connect.publish({
       room: "observable-room",
@@ -92,15 +92,15 @@ function App() {
 
   return (
     <div>
-      <h1 className="app--title">Struna's Chat App</h1>
-      <div className="user--sidebar">
-        <h2 className="online--title">Online Users</h2>
-        <h3 className="online--title">You:</h3>
+      <h1 className="app__title">Struna's Chat App</h1>
+      <div className="app__user--sidebar">
+        <h2 className="app__online--title">Online Users</h2>
+        <h3 className="app__current--user">You:</h3>
         <ShowCurrentUser currentUser={currentUser} />
-        <h3 className="online--title">Others:</h3>
-        <UserList members={newUserJoined} />
+        <h3 className="app__all--users">All users:</h3>
+        <UserList members={membersList} />
       </div>
-      <div className="app--wrapper">
+      <div className="app__wrapper">
         <MessageCreator newMessage={newMessage} />
         <MessageForm onNewMessage={onNewMessage} currentUser={currentUser} />
       </div>

@@ -1,11 +1,11 @@
-.send--button {
+.message__button--send {
   background: none;
   border: 2px solid black;
   margin: auto 15px;
   font-size: 20px;
   border-radius: 5px;
 }
-.app--title {
+.app__title {
   display: block;
   text-align: center;
   background-color: #363e47;
@@ -17,13 +17,13 @@
   margin-top: 0;
   margin-bottom: 0;
 }
-.app--wrapper {
+.app__wrapper {
   display: flex;
   flex-flow: column;
   align-items: center;
   margin-left: 250px;
 }
-.message--list {
+.message__list {
   text-align: right;
   border: 2px;
   padding: 20px 0;
@@ -35,13 +35,13 @@
   background-color: #f2f7f7;
   margin-top: 0px;
 }
-.app--form {
+.message__form {
   display: flex;
   flex-direction: row;
   flex-basis: 100%;
   margin-top: 60px;
 }
-.message--input {
+.message__input {
   border: 2px solid black;
   font-size: 20px;
   border-radius: 5px;
@@ -76,7 +76,7 @@
   font-size: 12px;
   text-align: right;
 }
-.user--sidebar {
+.app__user--sidebar {
   display: flex;
   flex-flow: column;
   align-items: center;
@@ -90,7 +90,7 @@
   overflow-x: hidden;
   padding-top: 20px;
 }
-.online--member {
+.user {
   text-align: center;
   list-style: none;
   margin-right: 40px;
@@ -99,8 +99,9 @@
   border-radius: 20px;
   font-weight: bold;
 }
-
-.online--title {
+.app__all--users,
+.app__online--title,
+.app__current--user {
   text-align: center;
   color: rgb(180, 177, 177);
 }

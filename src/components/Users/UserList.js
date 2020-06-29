@@ -6,11 +6,11 @@ class UserList extends React.Component {
 
     return (
       <div>
-        <ul className="online--users">
+        <ul>
           {members.map((chatMember) => (
             <li
               key={chatMember.id}
-              className="online--member"
+              className="user"
               style={{ backgroundColor: chatMember.clientData.color }}
             >
               {chatMember.clientData.username}

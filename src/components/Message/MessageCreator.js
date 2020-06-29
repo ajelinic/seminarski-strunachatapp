@@ -11,7 +11,7 @@ export default function MessageCreator(props) {
   useEffect(scrollToBottom, [message]);
 
   return (
-    <div className="message--list">
+    <div className="message__list">
       {props.newMessage.map((mprop) => (
         <ul className={mprop.className} key={props.newMessage.indexOf(mprop)}>
           <li className="username">{mprop.username}</li>

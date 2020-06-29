@@ -3,13 +3,13 @@ import React from "react";
 class ShowCurrentUser extends React.Component {
   render() {
     const { currentUser } = this.props;
-    return <div>{currentUser.map((me) => this.createUserList(me))}</div>;
+    return <div>{currentUser.map((me) => this.createCurrentUser(me))}</div>;
   }
 
-  createUserList(user) {
+  createCurrentUser(user) {
     return (
-      <ul className="online--users" key={user.id}>
-        <li className="online--member" style={{ backgroundColor: user.color }}>
+      <ul key={user.id}>
+        <li className="user" style={{ backgroundColor: user.color }}>
           {user.username}
         </li>
       </ul>
