@@ -78,10 +78,11 @@ function App() {
     const userIsLeaving = membersList;
     const index = userIsLeaving.map((member) => member.id === id);
     setMembersList((membersList) => {
-      const userGone = membersList.slice(index, 1);
+      const userGone = membersList.slice(1, index);
       return userGone;
     });
   };
+  console.log(membersList);
 
   const onNewMessage = (message) => {
     connect.publish({
