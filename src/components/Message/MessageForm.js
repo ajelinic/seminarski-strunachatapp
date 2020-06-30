@@ -16,19 +16,25 @@ export default function MessageForm(props) {
     }
     setMessage({ text: "" });
   };
-  // console.log("Creates 2 array", message);
+
   return (
-    <form className="app--form" onSubmit={onSubmitMessage}>
-      <input
-        className="message--input"
-        type="text"
-        value={message.text}
-        placeholder="Type a message and send!"
-        onChange={onChangeMessage}
-      />
-      <button className="send--button" type="submit" disabled={!message.text}>
-        Send!
-      </button>
-    </form>
+    <div>
+      <form className="message__form" onSubmit={onSubmitMessage}>
+        <input
+          className="message__input"
+          type="text"
+          value={message.text}
+          placeholder="Type a message and send!"
+          onChange={onChangeMessage}
+        />
+        <button
+          className="message__button--send"
+          type="submit"
+          disabled={!message.text}
+        >
+          Send!
+        </button>
+      </form>
+    </div>
   );
 }
