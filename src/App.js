@@ -2,8 +2,10 @@ import React, { useState, useEffect } from "react";
 import "./App.css";
 import CurrentTime from "./utils/CurrentTime";
 import MessageForm from "./components/Message/MessageForm";
+import MessageCreator from "./components/Message/MessageCreator";
 import setRandomColor from "./utils/SetRandomColor";
 import setRandomName from "./utils/SetRandomName";
+import UserList from "./components/Users/UserList";
 
 function App() {
   const [user, setUser] = useState({
@@ -12,6 +14,7 @@ function App() {
   });
   const [newMessage, setNewMessage] = useState([]);
   const [connect, setNewConnect] = useState(null);
+  const [membersList, setMembersList] = useState([]);
 
   useEffect(() => {
     const connect = new window.Scaledrone("uEBjhOewnG9HhRSy", {
@@ -47,11 +50,21 @@ function App() {
         const className = diversMessages ? "user--message" : "other--message";
         myMess.push({ text, username, color, chatID, time, className });
         setNewMessage([...newMessage, myMess]);
-        console.log(newMessage);
+        // console.log(newMessage);
       });
+      myRoom.on("members", (members) => {
+        setMembersList([...members]);
+      });
+      // myRoom.on("member_join", function (member) {
+      //   const joinedUser = membersList;
+      //   const username = member.clientData.username;
+      //   const color = member.clientData.color;
+      //   const userID = member.id;
+      //   joinedUser.push({ username, color, userID });
+      //   setMembersList([...membersList, joinedUser]);
+      // });
     });
   }
-
   const onNewMessage = (message) => {
     connect.publish({
       room: "observable-room",
@@ -62,18 +75,12 @@ function App() {
   return (
     <div>
       <h1 className="app--title">Struna's Chat App</h1>
+      <div className="user--sidebar">
+        <h3 className="online--title">Online Users</h3>
+        <UserList id="test" members={membersList} />
+      </div>
       <div className="app--wrapper">
-        <div className="message--list">
-          {newMessage.map((mprop) => (
-            <ul className={mprop.className} key={newMessage.indexOf(mprop)}>
-              <li className="username">{mprop.username}</li>
-              <li className="message" style={{ backgroundColor: mprop.color }}>
-                {mprop.text}
-                {mprop.time}
-              </li>
-            </ul>
-          ))}
-        </div>
+        <MessageCreator newMessage={newMessage} />
         <MessageForm onNewMessage={onNewMessage} />
       </div>
     </div>
